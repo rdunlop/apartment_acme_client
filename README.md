@@ -62,7 +62,7 @@ Setting up crypto the first time:
 2. `rake encryption:renew_and_update_certificate` - Authorize/create certificates
 3. `rake encryption:update_nginx_config` - re-write the nginx file to point at the certificates
 
-At this point, the only thing necessary is to run `rake renew_and_update_certificate` on a regular basis, which will find new domains, authorize them, and get new SSL certs for them.
+At this point, the only thing necessary is to run `rake encryption:renew_and_update_certificate` on a regular basis, which will find new domains, authorize them, and get new SSL certs for them.
 
 See below for a detailed explanation of "First Time Setup"
 
@@ -230,7 +230,7 @@ over https instead of http
 
 1) Register with Let's Encrypt
 
-Before we can make requests to Let's encrypt, we need to create a private key, which we will use for all future requests to Let's encrypt. To do this, run `rake encryption::create_crypto_client[my_email@example.com]` (replacing the email address with yours)
+Before we can make requests to Let's encrypt, we need to create a private key, which we will use for all future requests to Let's encrypt. To do this, run `rake encryption:create_crypto_client[my_email@example.com]` (replacing the email address with yours)
 
 This will create a new private key, store it on S3, and register that key with let's encrypt for your e-mail address.
 
@@ -247,7 +247,7 @@ The Nginx configuration must be updated to point to the SSL Certificate location
 
 run `rake encryption:update_nginx_config` in order to write the ngnix configuration file, and restart the nginx service.
 
-At this point, the only thing necessary is to run `rake renew_and_update_certificate` on a regular basis, which will find new domains, authorize them, and get new SSL certs for them. It will also restart nginx, to have it pick up the new certificate.
+At this point, the only thing necessary is to run `rake encryption:renew_and_update_certificate` on a regular basis, which will find new domains, authorize them, and get new SSL certs for them. It will also restart nginx, to have it pick up the new certificate.
 
 ------------------------------------------------------
 ### Schedule a weekly task to be run.
