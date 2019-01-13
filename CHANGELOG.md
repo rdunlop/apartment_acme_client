@@ -1,5 +1,9 @@
 # Future features
 
+# 0.0.3
+
+* Allow Rails 5.2.x
+
 # 0.0.2
 
 * Allow Rails 5.2
