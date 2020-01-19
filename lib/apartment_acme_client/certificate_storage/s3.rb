@@ -5,10 +5,10 @@ module ApartmentAcmeClient
     class S3
       def initialize
         @base_prefix = if ApartmentAcmeClient::lets_encrypt_test_server_enabled
-          TEST_PREFIX
-        else
-          ""
-        end
+                         TEST_PREFIX
+                       else
+                         ""
+                       end
       end
 
       ENCRYPTION_S3_NAME = 'server_encryption_client_private_key.der'.freeze
