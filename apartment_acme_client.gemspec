@@ -1,4 +1,5 @@
 # coding: utf-8
+
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "apartment_acme_client/version"
@@ -11,8 +12,8 @@ Gem::Specification.new do |spec|
 
   spec.summary          = %q{Let's Encrypt interface for Multi-tenancy applications (like Apartment)}
   spec.description      = %q{Manage/renew Let's Encrypt SSL Certificates for sites which respond to many different domains}
-  spec.homepage    = 'https://github.com/rdunlop/apartment_acme_client'
-  spec.license       = "MIT"
+  spec.homepage = 'https://github.com/rdunlop/apartment_acme_client'
+  spec.license = "MIT"
 
   # spec.files         = `git ls-files -z`.split("\x0").reject do |f|
   #   f.match(%r{^(test|spec|features)/})
@@ -27,10 +28,11 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "acme-client", "~> 0.3.1"
   spec.add_runtime_dependency "aws-sdk-s3", "~> 1"
-  spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "bundler", "~> 1.15"
+  spec.add_development_dependency "pry"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rspec-rails"
-  spec.add_development_dependency "pry"
+  spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency "sqlite3"
 end

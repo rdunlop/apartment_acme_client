@@ -16,7 +16,7 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.fixtures :all
 end
 
-Dir[ApartmentAcmeClient::Engine.root.join("spec", "apartment_acme_client","stubs", "*.rb")].each {|f| require f}
+Dir[ApartmentAcmeClient::Engine.root.join("spec", "apartment_acme_client", "stubs", "*.rb")].sort.each { |f| require f }
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

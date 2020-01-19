@@ -20,5 +20,4 @@ RSpec.describe ApartmentAcmeClient::Encryption do
   it "can call register_new" do
     expect(described_class.new.register_new("sam@example.com")).not_to be_nil
   end
-
 end

@@ -1,7 +1,6 @@
 module ApartmentAcmeClient
   class RenewalService
     def self.run!
-
       good_domains, rejected_domains = ApartmentAcmeClient::DomainChecker.new.accessible_domains
       puts "All domains to be requested: #{good_domains}, invalid domains: #{rejected_domains}"
 

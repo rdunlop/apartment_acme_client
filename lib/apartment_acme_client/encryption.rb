@@ -43,7 +43,7 @@ module ApartmentAcmeClient
     end
 
     def authorize_domains(domains)
-      successful_domains = domains.select {|domain| authorize_domain(domain) }
+      successful_domains = domains.select { |domain| authorize_domain(domain) }
       successful_domains
     end
 
