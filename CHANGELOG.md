@@ -1,6 +1,10 @@
 # Future features
 
-# 0.0.4
+# 0.0.5
+
+* Fix ACMEv2 client integration with http validation
+
+# 0.0.4 [broken]
 
 * Use ACMEv2 client
 * Enable provisioning Wildcard certificate

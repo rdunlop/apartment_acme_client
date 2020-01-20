@@ -175,7 +175,9 @@ module ApartmentAcmeClient
 
       # Do the HTTP authorizations
       order.authorizations.each do |authorization|
-        encryptor.send(:authorize_domain_with_http, authorization) unless authorization.wildcard || authorization.http.nil?
+        next if authorization.wildcard || authorization.http.nil?
+
+        authorize_domain_with_http(authorization)
       end
       # Do the DNS (wildcard) authorizations
       authorize_domains_with_dns(order.authorizations, wildcard_domain: wildcard_domain)
