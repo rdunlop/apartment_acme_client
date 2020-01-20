@@ -23,7 +23,7 @@ module ApartmentAcmeClient
 
       def store_csr_private_key_string(csr_private_key_string)
         File.write(cert_path('privkey.pem'), csr_private_key_string)
-        store_s3_file(derived_filename('privkey.pem'), certificate_string)
+        store_s3_file(derived_filename('privkey.pem'), csr_private_key_string)
       end
 
       # do we have a certificate on this server?
