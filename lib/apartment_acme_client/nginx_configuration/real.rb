@@ -105,7 +105,6 @@ module ApartmentAcmeClient
 
               ssl_stapling on;
               ssl_stapling_verify on;
-              ssl_trusted_certificate <%= options[:certificate_storage_folder] %>/<%= options[:cert_prefix] %>fullchain.pem;
 
               ssl_session_timeout 5m;
               <% end %>

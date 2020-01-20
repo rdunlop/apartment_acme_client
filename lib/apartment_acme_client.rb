@@ -7,6 +7,9 @@ require "apartment_acme_client/acme_client/proxy"
 require "apartment_acme_client/acme_client/real_client"
 require "apartment_acme_client/certificate_storage/proxy"
 require "apartment_acme_client/certificate_storage/s3"
+require "apartment_acme_client/dns_api/check_dns"
+require "apartment_acme_client/dns_api/fake"
+require "apartment_acme_client/dns_api/route53"
 require "apartment_acme_client/nginx_configuration/proxy"
 require "apartment_acme_client/nginx_configuration/real"
 require "apartment_acme_client/file_manipulation/proxy"
@@ -26,6 +29,9 @@ module ApartmentAcmeClient
       @@domains_to_check
     end
   end
+
+  # An optional domain which will we request a wildcard certificate for
+  mattr_accessor :wildcard_domain
 
   # The base domain, a domain which is always going to be accessible.
   # because we need a common domain to be used on each request.

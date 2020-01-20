@@ -1,5 +1,11 @@
 # Future features
 
+# 0.0.4
+
+* Use ACMEv2 client
+* Enable provisioning Wildcard certificate
+* Use AWS Route53 API for creating wildcard certificate
+
 # 0.0.3
 
 * Allow Rails 5.2.x
