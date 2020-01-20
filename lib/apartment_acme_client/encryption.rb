@@ -87,11 +87,11 @@ module ApartmentAcmeClient
         dns_authorizations.each do |domain_authorization|
           domain_authorization.request_validation
 
-          10.times do
+          30.times do
             # may be 'pending' initially
             break if domain_authorization.status == 'valid'
 
-            puts "Waiting for LetsEncrypt to authorize the domain"
+            puts "Waiting for LetsEncrypt to authorize the domain. Status #{domain_authorization.status}"
 
             # Wait a bit for the server to make the request, or just blink. It should be fast.
             sleep(2)
@@ -146,11 +146,11 @@ module ApartmentAcmeClient
       # Once you are ready to serve the confirmation request you can proceed.
       challenge.request_validation # => true
 
-      10.times do
+      30.times do
         # may be 'pending' initially
         break if challenge.status == 'valid'
 
-        puts "Waiting for letsencrypt to authorize the single domain"
+        puts "Waiting for letsencrypt to authorize the single domain. Status: #{challenge.status}"
 
         # Wait a bit for the server to make the request, or just blink. It should be fast.
         sleep(2)
