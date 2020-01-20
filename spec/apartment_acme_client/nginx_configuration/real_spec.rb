@@ -1,9 +1,10 @@
 require 'spec_helper'
 
-RSpec.describe ApartmentAcmeClient::NginxConfiguration::Real do
+RSpec.describe ApartmentAcmeClient::NginxConfiguration::Real do # rubocop:disable Metrics/BlockLength
   let(:root_path) { Rails.root.join("public") }
   before { ApartmentAcmeClient.certificate_storage_folder = root_path }
   before { ApartmentAcmeClient.public_folder = Rails.root.join("public") }
+  before { ApartmentAcmeClient.file_manipulation_class = Stubs::FakeFileManipulation }
 
   context "update_nginx" do
     it "can write a new file" do

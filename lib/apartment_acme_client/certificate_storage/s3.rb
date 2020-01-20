@@ -10,7 +10,7 @@ module ApartmentAcmeClient
                          TEST_PREFIX
                        else
                          ''
-        end
+                       end
       end
 
       ENCRYPTION_S3_NAME = 'server_encryption_client_private_key.der'
@@ -55,7 +55,6 @@ module ApartmentAcmeClient
       def save_csr_private_key(private_key)
         store_s3_file(csr_private_key_s3_filename, private_key.to_der)
       end
-
 
       private
 

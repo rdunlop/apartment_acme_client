@@ -14,6 +14,12 @@ module Stubs
       OpenStruct.new(http01: challenge)
     end
 
+    def new_order(identifiers:)
+      OpenStruct.new(
+        authorizations: []
+      )
+    end
+
     private
 
     def challenge

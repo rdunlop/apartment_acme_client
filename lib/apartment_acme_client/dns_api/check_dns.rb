@@ -29,7 +29,7 @@ module ApartmentAcmeClient
           rescue Resolv::ResolvError
             return false
           end
-          return false if !valid
+          return false unless valid
         end
 
         valid
@@ -40,7 +40,7 @@ module ApartmentAcmeClient
 
         @nameservers = []
         Resolv::DNS.open(nameserver: '8.8.8.8') do |dns|
-          while nameservers.length == 0
+          while nameservers.empty?
             @nameservers = dns.getresources(
               root_domain,
               Resolv::DNS::Resource::IN::NS
@@ -53,7 +53,7 @@ module ApartmentAcmeClient
 
       def wait_for_present(value, timeout_seconds: 60)
         time = 1
-        while !check_dns(value)
+        until check_dns(value)
           puts "Waiting for DNS to update"
           sleep 1
           time += 1

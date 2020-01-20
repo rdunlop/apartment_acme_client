@@ -13,8 +13,8 @@ RSpec.describe ApartmentAcmeClient::Encryption do
     expect(described_class.new.request_certificate(common_name: "example.com", domains: ["a.com"])).not_to be_nil
   end
 
-  it "can call authorize_domains" do
-    expect(described_class.new.authorize_domains(["a.com"])).not_to be_nil
+  it "can call authorize_domain_with_http" do
+    expect(described_class.new.request_certificate(common_name: "a.com", domains: ["a.com"])).not_to be_nil
   end
 
   it "can call register_new" do

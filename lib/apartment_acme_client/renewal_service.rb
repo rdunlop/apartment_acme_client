@@ -9,7 +9,11 @@ module ApartmentAcmeClient
       common_name = ApartmentAcmeClient.common_name || good_domains.first
 
       encryptor = ApartmentAcmeClient::Encryption.new
-      certificate = encryptor.request_certificate(common_name: common_name, domains: good_domains, wildcard_domain: ApartmentAcmeClient.wildcard_domain)
+      certificate = encryptor.request_certificate(
+        common_name: common_name,
+        domains: good_domains,
+        wildcard_domain: ApartmentAcmeClient.wildcard_domain
+      )
 
       ApartmentAcmeClient::CertificateStorage::Proxy.singleton.store_certificate_string(certificate)
       ApartmentAcmeClient::CertificateStorage::Proxy.singleton.store_csr_private_key_string(encryptor.csr_private_key_string)

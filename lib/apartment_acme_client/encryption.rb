@@ -21,16 +21,14 @@ require 'openssl'
 #
 # Manage the encryption of the website (https).
 module ApartmentAcmeClient
-  class Encryption
+  class Encryption # rubocop:disable Metrics/ClassLength
     def initialize
       @certificate_storage = ApartmentAcmeClient::CertificateStorage::Proxy.singleton
     end
 
     # Largely based on https://github.com/unixcharles/acme-client documentation
     def register_new(email)
-      unless @certificate_storage.private_key.nil?
-        raise StandardError, 'Private key already exists'
-      end
+      raise StandardError.new('Private key already exists') unless @certificate_storage.private_key.nil?
 
       private_key = create_private_key
 
@@ -50,8 +48,7 @@ module ApartmentAcmeClient
     # params:
     #  - authorizations - a list of authorizations, which may be http or dns based (ignore the non-wildcard ones)
     #  - wildcard_domain - the url of the wildcard's base domain (e.g. "site.example.com")
-    def authorize_domains_with_dns(authorizations, wildcard_domain:)
-
+    def authorize_domains_with_dns(authorizations, wildcard_domain:) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       label = nil
       record_type = nil
       values = []
@@ -93,6 +90,7 @@ module ApartmentAcmeClient
           10.times do
             # may be 'pending' initially
             break if domain_authorization.status == 'valid'
+
             puts "Waiting for LetsEncrypt to authorize the domain"
 
             # Wait a bit for the server to make the request, or just blink. It should be fast.
@@ -101,7 +99,8 @@ module ApartmentAcmeClient
           end
         end
       else
-        # ERROR, DNS not updated in 10 seconds?
+        # ERROR, DNS not updated in time
+        Rollbar.error("DNS Entry not found in timeout")
       end
     end
 
@@ -150,6 +149,7 @@ module ApartmentAcmeClient
       10.times do
         # may be 'pending' initially
         break if challenge.status == 'valid'
+
         puts "Waiting for letsencrypt to authorize the single domain"
 
         # Wait a bit for the server to make the request, or just blink. It should be fast.

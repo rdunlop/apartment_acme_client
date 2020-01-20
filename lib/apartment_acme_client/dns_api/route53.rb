@@ -28,7 +28,11 @@ module ApartmentAcmeClient
 
       # NOTE:
       # if you get error like:
-      # "Invalid Resource Record: FATAL problem: InvalidCharacterString (Value should be enclosed in quotation marks) encountered with <value>"
+      #
+      # "Invalid Resource Record: FATAL problem:
+      # InvalidCharacterString
+      # (Value should be enclosed in quotation marks) encountered with <value>"
+      #
       # this means that the "Value" should include escape quotes.
       # e.g. values: ["\"Something\"", "\"Other Thing\""]
       def write_record
@@ -62,8 +66,8 @@ module ApartmentAcmeClient
 
       def zone
         @zone = route53.list_hosted_zones(max_items: 100)
-                      .hosted_zones
-                      .detect { |z| z.name = '#{root_domain}.' }
+                       .hosted_zones
+                       .detect { |z| z.name = "#{root_domain}." }
       end
 
       def route53
