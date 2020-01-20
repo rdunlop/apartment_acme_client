@@ -1,6 +1,9 @@
 module Stubs
   class FakeCertificateStorage
-    def store_certificate(certificate)
+    def store_certificate_string(certificate)
+    end
+
+    def store_csr_private_key_string(private_key)
     end
 
     def cert_exists?

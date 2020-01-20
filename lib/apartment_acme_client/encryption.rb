@@ -45,34 +45,26 @@ module ApartmentAcmeClient
       @certificate_storage.save_private_key(private_key)
     end
 
-    # authorizes a domain with letsencrypt server
-    # returns true on success, false otherwise.
-    #
-    # from https://github.com/unixcharles/acme-client/tree/master#authorize-for-domain
-    def authorize_domain(domain_authorization)
-      if domain_authorization.http
-        authorize_domain_with_http(domain_authorization)
-      else
-        authorize_domain_with_dns(domain_authorization)
-      end
-    end
-
     # Authorize a wildcard cert domain.
     # to do this, we have to write to the Amazon Route53 DNS entry
     # params:
-    #  - authorizations - a list of authorizations, which may be http or dns based (ignore the http ones)
-    #  - root_domain - the url of the base domain
-    def authorize_domains_with_dns(authorizations, root_domain:)
+    #  - authorizations - a list of authorizations, which may be http or dns based (ignore the non-wildcard ones)
+    #  - wildcard_domain - the url of the wildcard's base domain (e.g. "site.example.com")
+    def authorize_domains_with_dns(authorizations, wildcard_domain:)
 
       label = nil
       record_type = nil
       values = []
 
+      dns_authorizations = []
       authorizations.each do |domain_authorization|
-        next unless domain_authorization.dns
+        next unless domain_authorization.wildcard
 
-        authorization = domain_authorization.dns
-        label         = "#{authorization.record_name}.#{root_domain}"
+        dns_authorizations << domain_authorization.dns
+      end
+
+      dns_authorizations.each do |authorization|
+        label         = "#{authorization.record_name}.#{wildcard_domain}"
         record_type   = authorization.record_type
         value         = authorization.record_content
         values << value
@@ -80,8 +72,8 @@ module ApartmentAcmeClient
 
       return unless values.any?
 
-      route53 = DnsApi::Route53.new(
-        requested_domain: root_domain,
+      route53 = ApartmentAcmeClient::DnsApi::Route53.new(
+        requested_domain: wildcard_domain,
         dns_record_label: label,
         record_type: record_type,
         values: values
@@ -89,7 +81,7 @@ module ApartmentAcmeClient
 
       route53.write_record
 
-      check_dns = DnsApi::CheckDns.new(root_domain, label)
+      check_dns = ApartmentAcmeClient::DnsApi::CheckDns.new(wildcard_domain, label)
 
       check_dns.wait_for_present(values.first)
 
@@ -183,19 +175,24 @@ module ApartmentAcmeClient
 
       # Do the HTTP authorizations
       order.authorizations.each do |authorization|
-        authorize_domain_with_http(authorization) if authorization.http
+        authorize_domain_with_http(authorization) unless authorization.wildcard
       end
       # Do the DNS (wildcard) authorizations
-      authorize_domains_with_dns(order.authorizations)
+      authorize_domains_with_dns(order.authorizations, wildcard_domain: wildcard_domain)
 
       client.request_certificate(common_name: common_name, names: domain_names_requested, order: order)
+    end
+
+    # for use in order to store this on the machine for NGINX use
+    def csr_private_key_string
+      csr_private_key.to_s
     end
 
     private
 
     def client
       @client ||= ApartmentAcmeClient::AcmeClient::Proxy.singleton(
-        acme_client_private_key: private_key,
+        acme_client_private_key: acme_client_private_key,
         csr_private_key: csr_private_key,
       )
     end

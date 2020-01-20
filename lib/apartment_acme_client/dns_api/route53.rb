@@ -16,7 +16,7 @@ module ApartmentAcmeClient
 
       # array of value keys to be written
       # (for wildcard certs, you'll have one for *.example.com, and one for example.com)
-      # e.g. ["\"One\"", "\"Two\""]
+      # e.g. ["One", "Two"]
       attr_reader :values
 
       def initialize(requested_domain:, dns_record_label:, record_type:, values:)
@@ -74,7 +74,11 @@ module ApartmentAcmeClient
       # createt an AwsRoute53 upsert with multiple value entries
       def resource_record_values
         values.map do |value|
-          { value: value }
+          if value.include?("\"")
+            { value: value }
+          else
+            { value: "\"#{value}\"" }
+          end
         end
       end
     end

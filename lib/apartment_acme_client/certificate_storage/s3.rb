@@ -16,17 +16,14 @@ module ApartmentAcmeClient
       ENCRYPTION_S3_NAME = 'server_encryption_client_private_key.der'
       CSR_ENCRYPTION_S3_NAME = 'csr_server_encryption_client_private_key.der'
 
-      def store_certificate(certificate)
-        # Save the certificate and the private key to files
-        File.write(cert_path('privkey.pem'), certificate.request.private_key.to_pem)
-        File.write(cert_path('cert.pem'), certificate.to_pem)
-        File.write(cert_path('chain.pem'), certificate.chain_to_pem)
-        File.write(cert_path('fullchain.pem'), certificate.fullchain_to_pem)
+      def store_certificate_string(certificate_string)
+        File.write(cert_path('cert.pem'), certificate_string)
+        store_s3_file(derived_filename('cert.pem'), certificate_string)
+      end
 
-        store_s3_file(derived_filename('privkey.pem'), certificate.request.private_key.to_pem)
-        store_s3_file(derived_filename('cert.pem'), certificate.to_pem)
-        store_s3_file(derived_filename('chain.pem'), certificate.chain_to_pem)
-        store_s3_file(derived_filename('fullchain.pem'), certificate.fullchain_to_pem)
+      def store_csr_private_key_string(csr_private_key_string)
+        File.write(cert_path('privkey.pem'), csr_private_key_string)
+        store_s3_file(derived_filename('privkey.pem'), certificate_string)
       end
 
       # do we have a certificate on this server?
@@ -44,7 +41,7 @@ module ApartmentAcmeClient
       end
 
       def csr_private_key
-        s3_object = s3_file(private_key_s3_filename)
+        s3_object = s3_file(csr_private_key_s3_filename)
         return nil unless s3_object.exists?
 
         s3_object.get.body.read

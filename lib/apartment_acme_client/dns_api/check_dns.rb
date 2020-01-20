@@ -6,7 +6,8 @@ module ApartmentAcmeClient
       attr_reader :root_domain, :dns_record
 
       def initialize(root_domain, dns_record)
-        @root_domain = root_domain
+        # ensure we only have the TLD, not a subdomain
+        @root_domain = root_domain.split(".").last(2).join(".")
         @dns_record = dns_record
       end
 
@@ -50,7 +51,7 @@ module ApartmentAcmeClient
         @nameservers
       end
 
-      def wait_for_present(value, timeout_seconds: 10)
+      def wait_for_present(value, timeout_seconds: 60)
         time = 1
         while !check_dns(value)
           puts "Waiting for DNS to update"

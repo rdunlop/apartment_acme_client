@@ -17,7 +17,7 @@ module ApartmentAcmeClient
       def register(email)
         # If the private key is not known to the server, we need to register it for the first time.
         account = @client.new_account(contact: "mailto:#{email}", terms_of_service_agreed: true)
-        Rollbar.notice("New Let's Encrypt Account created with KID: #{account.kid}")
+        Rollbar.info("New Let's Encrypt Account created with KID: #{account.kid}")
 
         true
       end
@@ -26,12 +26,16 @@ module ApartmentAcmeClient
         @client.authorize(domain: domain)
       end
 
+      def new_order(identifiers:)
+        @client.new_order(identifiers: identifiers)
+      end
+
       # Create a Certificate for our new set of domain names
       # returns that certificate
       def request_certificate(common_name:, names:, order:)
         # We're going to need a certificate signing request. If not explicitly
         # specified, the first name listed becomes the common name.
-        csr = Acme::Client::CertificateRequest.new(private_key: csr_private_key, subject: { common_name: common_name, names: names })
+        csr = Acme::Client::CertificateRequest.new(private_key: csr_private_key, common_name: common_name, names: names)
         order.finalize(csr: csr)
         while order.status == 'processing'
           sleep(1)
