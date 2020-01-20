@@ -1,39 +1,49 @@
+# frozen_string_literal: true
+
 require 'aws-sdk-s3'
 
 module ApartmentAcmeClient
   module CertificateStorage
     class S3
       def initialize
-        @base_prefix = if ApartmentAcmeClient::lets_encrypt_test_server_enabled
+        @base_prefix = if ApartmentAcmeClient.lets_encrypt_test_server_enabled
                          TEST_PREFIX
                        else
-                         ""
-                       end
+                         ''
+        end
       end
 
-      ENCRYPTION_S3_NAME = 'server_encryption_client_private_key.der'.freeze
+      ENCRYPTION_S3_NAME = 'server_encryption_client_private_key.der'
+      CSR_ENCRYPTION_S3_NAME = 'csr_server_encryption_client_private_key.der'
 
       def store_certificate(certificate)
         # Save the certificate and the private key to files
-        File.write(cert_path("privkey.pem"), certificate.request.private_key.to_pem)
-        File.write(cert_path("cert.pem"), certificate.to_pem)
-        File.write(cert_path("chain.pem"), certificate.chain_to_pem)
-        File.write(cert_path("fullchain.pem"), certificate.fullchain_to_pem)
+        File.write(cert_path('privkey.pem'), certificate.request.private_key.to_pem)
+        File.write(cert_path('cert.pem'), certificate.to_pem)
+        File.write(cert_path('chain.pem'), certificate.chain_to_pem)
+        File.write(cert_path('fullchain.pem'), certificate.fullchain_to_pem)
 
-        store_s3_file(derived_filename("privkey.pem"), certificate.request.private_key.to_pem)
-        store_s3_file(derived_filename("cert.pem"), certificate.to_pem)
-        store_s3_file(derived_filename("chain.pem"), certificate.chain_to_pem)
-        store_s3_file(derived_filename("fullchain.pem"), certificate.fullchain_to_pem)
+        store_s3_file(derived_filename('privkey.pem'), certificate.request.private_key.to_pem)
+        store_s3_file(derived_filename('cert.pem'), certificate.to_pem)
+        store_s3_file(derived_filename('chain.pem'), certificate.chain_to_pem)
+        store_s3_file(derived_filename('fullchain.pem'), certificate.fullchain_to_pem)
       end
 
       # do we have a certificate on this server?
       # We cannot start nginx when it is pointing at a non-existing certificate,
       # so we need to check
       def cert_exists?
-        File.exist?(cert_path("privkey.pem"))
+        File.exist?(cert_path('privkey.pem'))
       end
 
       def private_key
+        s3_object = s3_file(private_key_s3_filename)
+        return nil unless s3_object.exists?
+
+        s3_object.get.body.read
+      end
+
+      def csr_private_key
         s3_object = s3_file(private_key_s3_filename)
         return nil unless s3_object.exists?
 
@@ -45,10 +55,19 @@ module ApartmentAcmeClient
         store_s3_file(private_key_s3_filename, private_key.to_der)
       end
 
+      def save_csr_private_key(private_key)
+        store_s3_file(csr_private_key_s3_filename, private_key.to_der)
+      end
+
+
       private
 
       def private_key_s3_filename
         derived_filename(ENCRYPTION_S3_NAME)
+      end
+
+      def csr_private_key_s3_filename
+        derived_filename(CSR_ENCRYPTION_S3_NAME)
       end
 
       def derived_filename(filename)

@@ -15,28 +15,26 @@ The goal of this gem is to solve the following problems:
 
 1) Make it easy to start using let's encrypt for multiple domains on one server
 1) Make it easy to periodically refresh a certificate which handles many domains
-1) Make it possible to add a new DNS entry which refers to the server, and request a cert which now also covers that new domain.
+1) Make it possible to add a new custom DNS entry which refers to the server, and request a cert which now also covers that new domain.
+1) Make it easy to request a wildcard cert as well as individual domain certs
 1) Make it resilient, if a DNS record is removed, handle that by removing that domain from list requested for the cert.
 
 **Example Situation**:
 
-- Your application is known as example.com
+- Your application is known as site.example.com
 - You allow users to create new accounts, and assign each account a separate subdomain,
-  - e.g. alice.example.com, bob.example.com, charlie.example.com
+  - e.g. alice.site.example.com, bob.site.example.com, charlie.site.example.com
 - You allow users to also whitelabel the service by buying their own domains, and setting up CNAME records:
-  - e.g. www.alice.com -> CNAME: alice.example.com
-  - e.g. bobrocks.com -> CNAME: bob.example.com
+  - e.g. www.alice.com -> CNAME: alice.site.example.com
+  - e.g. bobrocks.com -> CNAME: bob.site.example.com
 
 **What can ApartmentAcmeClient do?**
 
 - Create a single Let's Encrypt SSL Certificate which covers all of:
-  - example.com
-  - alice.example.com
-  - bob.example.com
-  - charlie.example.com
+  - site.example.com
+  - *.site.example.com (which covers alice.site.example.com, bob.site.example.com, charlie.site.example.com)
   - www.alice.com
   - bobrocks.com
-
 
 SSL Certificates
 ----------------
@@ -70,6 +68,8 @@ See below for a detailed explanation of "First Time Setup"
 
 When setting this up the first time, it is recommended that you enable test-mode:
 ```ruby
+# in config/initializers/apartment_acme_client.rb
+
 ApartmentAcmeClient.lets_encrypt_test_server_enabled = true
 ```
 
@@ -131,11 +131,26 @@ Define the code which will list the domains to check.
 # Should return an array of domains (without http/https prefixes)
 
 # It can be a straight array, or a callable object
-ApartmentAcmeClient.domains_to_check = -> { SomeModel.all.map(&:subdomain) }
+# These should be all of the domains which are NOT
+# covered by the wildcard settings
+ApartmentAcmeClient.domains_to_check = -> { SomeModel.all.map(&:custom_domain) }
+ApartmentAcmeClient.wildcard_domain = "site.example.com" # optional element
 
 # e.g.
 # ApartmentAcmeClient.domains_to_check = ["example.com", "alice.example.com", "alice.com"]
 ```
+
+#### Wildcard domain
+
+You can request a wildcard certificate for a domain (or a subdomain). In order to do this, the system must be able to write to the DNS provider.
+
+Currently, only Route53 is supported as a DNS provider, and we use an `upsert` to write a TXT record to the system, in order to prove that we control the DNS for the domain.
+
+If you specify `wildcard_domain` (the domain on which to request a wildcard cert), we will request a wilcard cert for `*.<wildcard_domain>`, and use AWS Route53 API to perform the domain-authorization.
+
+The necessary permissions to be able to update the Route53 records for wildcard-cert update are:
+- route53:ListHostedZones
+- route53:ChangeResourceRecordSets
 
 #### Specify the common-name domain
 
@@ -254,15 +269,14 @@ At this point, the only thing necessary is to run `rake encryption:renew_and_upd
 
 Each week, the certificates should be renewed. We have provided 2 ways to do this.
 
-a rake task:
+straight invocation:
 ```ruby
-rake "encryption:renew_and_update_certificate"
+  ApartmentAcmeClient::RenewalService.run!
 ```
 
-straight invocation:
-
+we provide a helper rake task:
 ```ruby
-ApartmentAcmeClient::RenewalService.run!
+rake "encryption:renew_and_update_certificate"
 ```
 
 Please use whatever scheduling service you wish in order to ensure that this runs periodically.
