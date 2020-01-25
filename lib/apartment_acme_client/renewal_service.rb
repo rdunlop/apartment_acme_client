@@ -14,6 +14,10 @@ module ApartmentAcmeClient
         domains: good_domains,
         wildcard_domain: ApartmentAcmeClient.wildcard_domain
       )
+      if certificate.nil?
+        puts "ERROR, no certificate returned aborting"
+        return
+      end
 
       ApartmentAcmeClient::CertificateStorage::Proxy.singleton.store_certificate_string(certificate)
       ApartmentAcmeClient::CertificateStorage::Proxy.singleton.store_csr_private_key_string(encryptor.csr_private_key_string)

@@ -76,18 +76,21 @@ module ApartmentAcmeClient
         values: values
       )
 
+      puts "writing #{label} to Route53"
       route53.write_record
 
       check_dns = ApartmentAcmeClient::DnsApi::CheckDns.new(wildcard_domain, label)
 
       check_dns.wait_for_present(values.first)
+      puts "waiting 60 seconds before requesting DNS check from LetsEncrypt"
+      sleep(60)
 
       if check_dns.check_dns(values.first)
         # DNS is updated, proceed with cert request
         dns_authorizations.each do |domain_authorization|
           domain_authorization.request_validation
 
-          30.times do
+          60.times do
             # may be 'pending' initially
             break if domain_authorization.status == 'valid'
 
@@ -111,6 +114,7 @@ module ApartmentAcmeClient
     def authorize_domain_with_http(domain_authorization)
       challenge = domain_authorization.http
 
+      puts "authorizing Domain: #{domain_authorization.domain}"
       # The http method will require you to respond to a HTTP request.
 
       # You can retrieve the challenge token
@@ -148,7 +152,10 @@ module ApartmentAcmeClient
 
       30.times do
         # may be 'pending' initially
-        break if challenge.status == 'valid'
+        if challenge.status == 'valid'
+          puts "authorized!"
+          break
+        end
 
         puts "Waiting for letsencrypt to authorize the single domain. Status: #{challenge.status}"
 
@@ -179,10 +186,14 @@ module ApartmentAcmeClient
 
         authorize_domain_with_http(authorization)
       end
-      # Do the DNS (wildcard) authorizations
-      authorize_domains_with_dns(order.authorizations, wildcard_domain: wildcard_domain)
 
-      client.request_certificate(common_name: common_name, names: domain_names_requested, order: order)
+      # Do the DNS (wildcard) authorizations
+      if authorize_domains_with_dns(order.authorizations, wildcard_domain: wildcard_domain)
+        client.request_certificate(common_name: common_name, names: domain_names_requested, order: order)
+      else
+        # error, not authorized
+        nil
+      end
     end
 
     # for use in order to store this on the machine for NGINX use
