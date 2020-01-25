@@ -51,7 +51,7 @@ module ApartmentAcmeClient
         @nameservers
       end
 
-      def wait_for_present(value, timeout_seconds: 60)
+      def wait_for_present(value, timeout_seconds: 120)
         time = 1
         until check_dns(value)
           puts "Waiting for DNS to update"
