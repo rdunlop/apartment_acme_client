@@ -67,7 +67,7 @@ module ApartmentAcmeClient
         values << value
       end
 
-      return unless values.any?
+      return true unless values.any?
 
       route53 = ApartmentAcmeClient::DnsApi::Route53.new(
         requested_domain: wildcard_domain,

@@ -1,5 +1,10 @@
 # Future features
 
+# 0.0.6
+
+* Add small delay between DNS update and LetsEncrypt authorization request
+* Add some more detailed logging during renewal sequence
+
 # 0.0.5
 
 * Fix ACMEv2 client integration with http validation
