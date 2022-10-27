@@ -24,7 +24,7 @@ jobs:
       # Restore the bundle of gems
       - restore_cache:
           key: gemfile-cache-{{ checksum "Gemfile.lock" }}
-      - run: bundle install --without=development --jobs=2 --retry=3
+      - run: bundle install --jobs=2 --retry=3
 
       - save_cache:
           key: gemfile-cache-{{ checksum "Gemfile.lock" }}
