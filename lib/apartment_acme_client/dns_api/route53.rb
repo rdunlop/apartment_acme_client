@@ -26,8 +26,7 @@ module ApartmentAcmeClient
         @values = values
       end
 
-      # NOTE:
-      # if you get error like:
+      # NOTE: If you get error like:
       #
       # "Invalid Resource Record: FATAL problem:
       # InvalidCharacterString
@@ -71,7 +70,7 @@ module ApartmentAcmeClient
       end
 
       def route53
-        # Note: The `region` doesn't matter, because Route53 is global.
+        # NOTE: The `region` doesn't matter, because Route53 is global.
         @route53 ||= Aws::Route53::Client.new(region: 'us-east-1')
       end
 

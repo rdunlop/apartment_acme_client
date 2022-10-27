@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   # end
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  spec.add_dependency "rails", ">= 4.1.0", "< 6"
+  spec.add_dependency "rails", ">= 4.1.0", "< 7"
 
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }

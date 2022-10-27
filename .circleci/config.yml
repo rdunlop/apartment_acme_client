@@ -1,0 +1,72 @@
+version: 2
+references:
+  default_job_config: &default_job_config
+    # The working directory is important, so that we
+    # install/cache everything relative to that location
+    working_directory: ~/tmp
+    docker:
+      - image: circleci/ruby:2.6.6
+        environment:
+          RAILS_ENV: test
+          PGHOST: localhost
+          PGUSER: ubuntu
+          # Bundle paths are necessary so that the gems are installed within the workspace
+          # otherwise, they are installed in /usr/local
+          BUNDLE_PATH: ~/tmp/vendor/bundle
+          BUNDLE_APP_CONFIG: ~/tmp/vendor/bundle
+jobs:
+  build:
+    <<: *default_job_config
+    steps:
+      - checkout
+
+      # Gems
+      # Restore the bundle of gems
+      - restore_cache:
+          key: gemfile-cache-{{ checksum "Gemfile.lock" }}
+      - run: bundle install --without=development --jobs=2 --retry=3
+
+      - save_cache:
+          key: gemfile-cache-{{ checksum "Gemfile.lock" }}
+          # NOTE: if this path directory is changed, the 'key' must be changed.
+          # because caches are write-once, and always restore to the same path
+          # they were in when they were stored.
+          paths:
+            - ~/tmp/vendor/bundle
+
+      # Store the application code, configuration, and gems in a workspace
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  rubocop:
+    <<: *default_job_config
+    steps:
+      - attach_workspace:
+          at: ~/tmp
+      - run: bundle exec rubocop --config .rubocop.yml
+
+  rspec:
+    <<: *default_job_config
+    steps:
+      - attach_workspace:
+          at: ~/tmp
+
+      # Run rspec
+      - run: bundle exec rake spec
+
+      # Save test results for timing analysis
+      - store_test_results:
+          path: test_results
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - build
+      - rspec:
+          requires:
+            - build
+      - rubocop:
+          requires:
+            - build

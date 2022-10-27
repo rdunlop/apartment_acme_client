@@ -81,8 +81,7 @@ module ApartmentAcmeClient
 
       def s3_file(filename)
         s3 = Aws::S3::Resource.new(region: ApartmentAcmeClient.aws_region)
-        object = s3.bucket(ApartmentAcmeClient.aws_bucket).object(filename)
-        object
+        s3.bucket(ApartmentAcmeClient.aws_bucket).object(filename)
       end
     end
   end
