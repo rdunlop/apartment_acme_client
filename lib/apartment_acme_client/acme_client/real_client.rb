@@ -6,6 +6,7 @@ module ApartmentAcmeClient
   module AcmeClient
     class RealClient
       attr_reader :csr_private_key
+
       def initialize(acme_client_private_key:, csr_private_key:)
         @client = Acme::Client.new(
           private_key: acme_client_private_key,

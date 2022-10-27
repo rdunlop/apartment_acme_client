@@ -48,7 +48,7 @@ module ApartmentAcmeClient
     # params:
     #  - authorizations - a list of authorizations, which may be http or dns based (ignore the non-wildcard ones)
     #  - wildcard_domain - the url of the wildcard's base domain (e.g. "site.example.com")
-    def authorize_domains_with_dns(authorizations, wildcard_domain:) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    def authorize_domains_with_dns(authorizations, wildcard_domain:) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
       label = nil
       record_type = nil
       values = []
@@ -111,7 +111,7 @@ module ApartmentAcmeClient
     # returns true on success, false otherwise.
     #
     # from https://github.com/unixcharles/acme-client/tree/master#authorize-for-domain
-    def authorize_domain_with_http(domain_authorization)
+    def authorize_domain_with_http(domain_authorization) # rubocop:disable Metrics/MethodLength
       challenge = domain_authorization.http
 
       puts "authorizing Domain: #{domain_authorization.domain}"
@@ -190,7 +190,7 @@ module ApartmentAcmeClient
       # Do the DNS (wildcard) authorizations
       if authorize_domains_with_dns(order.authorizations, wildcard_domain: wildcard_domain)
         client.request_certificate(common_name: common_name, names: domain_names_requested, order: order)
-      else
+      else # rubocop:disable Style/EmptyElse
         # error, not authorized
         nil
       end
