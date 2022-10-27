@@ -314,6 +314,3 @@ Aws.config.update(
   )
 )
 ```
-
-TODO
-- Get CI running

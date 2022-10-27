@@ -1,5 +1,11 @@
 # Future features
 
+# 0.0.7
+
+* Add CircleCI Config
+* Fix Rubocop warnings (now enforced by CI)
+* Expand Rails compatibility to include rails 6.x
+
 # 0.0.6
 
 * Add small delay between DNS update and LetsEncrypt authorization request
