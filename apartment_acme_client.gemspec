@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'acme-client', '~> 2.0.0'
   spec.add_runtime_dependency "aws-sdk-route53", "~> 1"
   spec.add_runtime_dependency "aws-sdk-s3", "~> 1"
-  spec.add_development_dependency "bundler", "2.1.4"
+  spec.add_development_dependency "bundler", "> 2.1.4"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec", "~> 3.0"
