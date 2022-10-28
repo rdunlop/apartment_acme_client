@@ -1,5 +1,9 @@
 # Future features
 
+# 0.0.8
+
+* Expand Rails compatibility to include rails 7.x
+
 # 0.0.7
 
 * Add CircleCI Config
