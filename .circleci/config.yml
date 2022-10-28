@@ -5,7 +5,7 @@ references:
     # install/cache everything relative to that location
     working_directory: ~/tmp
     docker:
-      - image: circleci/ruby:2.6.6
+      - image: cimg/ruby:2.7.6
         environment:
           RAILS_ENV: test
           PGHOST: localhost
@@ -20,10 +20,6 @@ jobs:
     steps:
       - checkout
 
-      # Gems
-      # Restore the bundle of gems
-      - restore_cache:
-          key: gemfile-cache-{{ checksum "Gemfile.lock" }}
       - run: bundle install --jobs=2 --retry=3
 
       - save_cache:

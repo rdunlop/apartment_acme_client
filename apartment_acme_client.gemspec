@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   # end
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  spec.add_dependency "rails", ">= 4.1.0", "< 7"
+  spec.add_dependency "rails", ">= 4.1.0", "< 8"
 
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
@@ -29,9 +29,9 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'acme-client', '~> 2.0.0'
   spec.add_runtime_dependency "aws-sdk-route53", "~> 1"
   spec.add_runtime_dependency "aws-sdk-s3", "~> 1"
-  spec.add_development_dependency "bundler", "~> 1.15"
+  spec.add_development_dependency "bundler", "> 2.1.4"
   spec.add_development_dependency "pry"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency 'rubocop'
