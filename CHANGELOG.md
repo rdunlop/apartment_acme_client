@@ -1,5 +1,9 @@
 # Future features
 
+# 0.0.9
+
+* Fix issue with using ruby stdlib 'resolv' on Ruby 2.6.x
+
 # 0.0.8
 
 * Expand Rails compatibility to include rails 7.x
