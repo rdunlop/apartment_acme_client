@@ -1,3 +1,5 @@
+require "resolv"
+
 module ApartmentAcmeClient
   module DnsApi
     # Check to see if a particular DNS record is
