@@ -1,5 +1,10 @@
 # Future features
 
+# 0.0.10
+
+* Fix issue with kwargs in Ruby 3
+* Fix issue with missing OpenStruct library
+
 # 0.0.9
 
 * Fix issue with using ruby stdlib 'resolv' on Ruby 2.6.x
