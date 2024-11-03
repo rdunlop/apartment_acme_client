@@ -2,7 +2,7 @@ module ApartmentAcmeClient
   module AcmeClient
     class Proxy
       def self.singleton(options = {})
-        base_class.new(options)
+        base_class.new(**options)
       end
 
       def self.base_class

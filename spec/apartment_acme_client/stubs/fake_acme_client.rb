@@ -1,3 +1,4 @@
+require "ostruct"
 module Stubs
   class FakeAcmeClient
     def initialize(options = {})
