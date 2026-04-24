@@ -1,11 +1,11 @@
-version: 2
-references:
-  default_job_config: &default_job_config
+version: 2.1
+executors:
+  my_executor:
     # The working directory is important, so that we
     # install/cache everything relative to that location
     working_directory: ~/tmp
     docker:
-      - image: cimg/ruby:3.1.6
+      - image: cimg/ruby:3.2.10
         environment:
           RAILS_ENV: test
           PGHOST: localhost
@@ -16,7 +16,7 @@ references:
           BUNDLE_APP_CONFIG: ~/tmp/vendor/bundle
 jobs:
   build:
-    <<: *default_job_config
+    executor: my_executor
     steps:
       - checkout
 
@@ -36,14 +36,14 @@ jobs:
           paths:
             - .
   rubocop:
-    <<: *default_job_config
+    executor: my_executor
     steps:
       - attach_workspace:
           at: ~/tmp
       - run: bundle exec rubocop --config .rubocop.yml
 
   rspec:
-    <<: *default_job_config
+    executor: my_executor
     steps:
       - attach_workspace:
           at: ~/tmp

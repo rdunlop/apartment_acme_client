@@ -1,5 +1,9 @@
 # Future features
 
+# 0.0.11
+
+* Allow rails 8
+
 # 0.0.10
 
 * Fix issue with kwargs in Ruby 3
