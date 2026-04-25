@@ -285,9 +285,28 @@ e.g. [whenever](https://github.com/javan/whenever)
 ----------------------------------------------------------------------
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### Docker (recommended)
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+This gem has its own Docker environment so it can be developed in isolation from any host Ruby installation or parent project.
+
+```bash
+# From the apartment_acme_client/ directory:
+docker-compose build                               # once, or when Dockerfile changes
+docker-compose run --rm app bundle install         # first time, or after Gemfile changes
+docker-compose run --rm app bundle exec rake spec  # run tests
+docker-compose run --rm app bundle exec rake install  # build and install gem locally
+```
+
+Installed gems are cached in a named Docker volume (`gem_cache`) so `bundle install` only re-runs when dependencies change.
+
+### Releasing a new version
+
+1. Update the version number in `lib/apartment_acme_client/version.rb`
+2. Run `bundle exec rake release` **on the host** (not inside Docker) — it needs your RubyGems credentials (`~/.gem/credentials`) and git SSH access to push the tag and publish the gem.
+
+### Without Docker
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 ## Contributing
 

@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+      - gem_cache:/bundle
+      - ~/.ssh:/root/.ssh:ro
+      - ~/.gitconfig:/root/.gitconfig:ro
+    environment:
+      BUNDLE_PATH: /bundle
+    working_dir: /app
+    command: bash
+
+volumes:
+  gem_cache:
