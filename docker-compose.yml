@@ -5,6 +5,7 @@ services:
       - .:/app
       - gem_cache:/bundle
       - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock
+      - ~/.gitconfig:/root/.gitconfig:ro
     environment:
       BUNDLE_PATH: /bundle
       SSH_AUTH_SOCK: /run/host-services/ssh-auth.sock
