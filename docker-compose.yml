@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+      - gem_cache:/bundle
+    environment:
+      BUNDLE_PATH: /bundle
+    working_dir: /app
+    command: bash
+
+volumes:
+  gem_cache:
