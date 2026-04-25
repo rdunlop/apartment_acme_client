@@ -4,11 +4,10 @@ services:
     volumes:
       - .:/app
       - gem_cache:/bundle
-      - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock
+      - ~/.ssh:/root/.ssh:ro
       - ~/.gitconfig:/root/.gitconfig:ro
     environment:
       BUNDLE_PATH: /bundle
-      SSH_AUTH_SOCK: /run/host-services/ssh-auth.sock
     working_dir: /app
     command: bash
 
